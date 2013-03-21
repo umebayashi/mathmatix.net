@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{7ECA263E-482D-4E94-B820-DC974FC39C04}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{0CA73530-D643-4605-AD56-E5C6BB47CCA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Library\Common\Common.csproj", "{D7649559-258F-42D7-9736-BF9CC2DFF6E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Test", "Library\Common.Test\Common.Test.csproj", "{FFB0E48A-3FD1-453F-835B-513A89725840}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7649559-258F-42D7-9736-BF9CC2DFF6E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7649559-258F-42D7-9736-BF9CC2DFF6E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7649559-258F-42D7-9736-BF9CC2DFF6E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7649559-258F-42D7-9736-BF9CC2DFF6E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFB0E48A-3FD1-453F-835B-513A89725840}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFB0E48A-3FD1-453F-835B-513A89725840}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFB0E48A-3FD1-453F-835B-513A89725840}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFB0E48A-3FD1-453F-835B-513A89725840}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D7649559-258F-42D7-9736-BF9CC2DFF6E2} = {0CA73530-D643-4605-AD56-E5C6BB47CCA3}
+		{FFB0E48A-3FD1-453F-835B-513A89725840} = {0CA73530-D643-4605-AD56-E5C6BB47CCA3}
+	EndGlobalSection
+EndGlobal
