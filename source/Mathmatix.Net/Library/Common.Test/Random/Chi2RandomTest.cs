@@ -7,7 +7,7 @@ namespace Mathmatix.Common.Random
 	public class Chi2RandomTest
 	{
 		[TestMethod]
-		public void TestNextDouble()
+		public void TestNextDouble_Int()
 		{
 			var random = new Chi2Random();
 

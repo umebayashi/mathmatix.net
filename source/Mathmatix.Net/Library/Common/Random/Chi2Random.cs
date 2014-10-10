@@ -7,6 +7,7 @@
 	{
 		private static readonly object LockObj = new object();
 		private static readonly NormalRandom NormalRnd = new NormalRandom();
+		private static readonly GammaRandom GammaRnd = new GammaRandom();
 
 		/// <summary>
 		/// 
@@ -26,6 +27,16 @@
 
 				return s;
 			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="freedomDegree">自由度</param>
+		/// <returns></returns>
+		public double NextDouble(double freedomDegree)
+		{
+			return 2 * GammaRnd.NextDouble(0.5 * freedomDegree);
 		}
 	}
 }
