@@ -12,29 +12,76 @@ namespace Mathmatix.Common
 	/// </summary>
 	public static class Prime
 	{
-		#region field / property
-
-		private static long _max = 0;
-
-		private static readonly List<long> Primes = new List<long>();
-
-		#endregion
-
 		#region public method
 
 		/// <summary>
 		/// 素数の一覧を取得する
 		/// </summary>
-		/// <param name="max"></param>
+		/// <param name="maxValue"></param>
 		/// <returns></returns>
-		public static IEnumerable<long> GetPrimes(long max)
+		public static IEnumerable<int> GetPrimes(int maxValue)
 		{
-			if (!Primes.Any() || _max < max)
+			bool[] isPrime = new bool[maxValue];
+
+			if (maxValue < 2)
 			{
-				CalculatePrimes(max);
+				yield break;
 			}
 
-			return Primes.Where(x => x <= max).ToArray();
+			int sqrtN = (int)Math.Floor(Math.Sqrt(maxValue));
+			int n;
+
+			for (int x = 1; x <= sqrtN; ++x)
+			{
+				for (int y = 1; y <= sqrtN; ++y)
+				{
+					n = 4 * x * x + y * y;
+					if (n <= maxValue && (n % 12 == 1 || n % 12 == 5))
+					{
+						isPrime[n - 1] = !isPrime[n - 1];
+					}
+
+					n = 3 * x * x + y * y;
+					if (n <= maxValue && n % 12 == 7)
+					{
+						isPrime[n - 1] = !isPrime[n - 1];
+					}
+
+					n = 3 * x * x - y * y;
+					if (x > y && n <= maxValue && n % 12 == 11)
+					{
+						isPrime[n - 1] = !isPrime[n - 1];
+					}
+				}
+			}
+
+			for (int i = 5; i <= sqrtN; ++i)
+			{
+				if (isPrime[i - 1])
+				{
+					for (int k = i * i; k <= maxValue; k += i * i)
+					{
+						isPrime[k - 1] = false;
+					}
+				}
+			}
+
+			if (maxValue >= 2)
+			{
+				isPrime[1] = true;
+			}
+			if (maxValue >= 3)
+			{
+				isPrime[2] = true;
+			}
+
+			for (int i = 0; i < isPrime.Length; i++)
+			{
+				if (isPrime[i])
+				{
+					yield return i + 1;
+				}
+			}
 		}
 
 		/// <summary>
@@ -42,7 +89,7 @@ namespace Mathmatix.Common
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static PrimeFactors Factorize(long value)
+		public static PrimeFactors Factorize(int value)
 		{
 			switch (value)
 			{
@@ -56,12 +103,12 @@ namespace Mathmatix.Common
 
 			var val = Math.Abs(value);
 			var primes = GetPrimes(val);
-			var enumerable = primes as long[] ?? primes.ToArray();
+			var enumerable = primes as int[] ?? primes.ToArray();
 			if (enumerable.Max() == val)
 			{
 				return new PrimeFactors
 				{
-					Factors = new PrimeFactor[] { new PrimeFactor { Prime = val, Multiplier = 1 } },
+					Factors = new PrimeFactor[] { new PrimeFactor(val, 1) },
 					Sign = Math.Sign(value),
 					Value = value,
 					IsPrime = true
@@ -77,73 +124,17 @@ namespace Mathmatix.Common
 					var factor = list.FirstOrDefault(x => x.Prime == prime);
 					if (factor == null)
 					{
-						factor = new PrimeFactor { Prime = prime, Multiplier = 0 };
+						factor = new PrimeFactor(prime, 0);
 						list.Add(factor);
 					}
 					factor.Multiplier++;
 
-					v = (long)(v / prime);
+					v = (int)(v / prime);
 				}
 			}
 
 			var result = new PrimeFactors { Factors = list.ToArray(), Sign = Math.Sign(value), Value = value };
 			return result;
-		}
-
-		#endregion
-
-		#region non-public method
-
-		private static void CalculatePrimes(long max)
-		{
-			if (Primes.Count == 0)
-			{
-				Primes.Add(2);
-				_max = 2;
-			}
-
-			var primes = new List<long>();
-			primes.AddRange(Primes);
-
-			var current = primes.Max();
-
-			if (current >= max)
-			{
-				return;
-			}
-
-			var list = new List<long>();
-			for (var i = _max + 1; i <= max; i++)
-			{
-				if (i % current != 0)
-				{
-					list.Add(i);
-				}
-			}
-
-			foreach (var m in primes.Select(p => list.Where(x => x % p == 0)).SelectMany(multiplies => multiplies.Where(list.Contains)))
-			{
-				list.Remove(m);
-			}
-
-			var maxSqrt = Math.Sqrt(max);
-			do
-			{
-				current = list.Min();
-				primes.Add(current);
-
-				var multiples = list.Where(x => x % current == 0).ToArray();
-				foreach (var m in multiples.Where(list.Contains))
-				{
-					list.Remove(m);
-				}
-			} while (current < maxSqrt);
-
-			Primes.Clear();
-			Primes.AddRange(primes);
-			Primes.AddRange(list);
-
-			_max = max;
 		}
 
 		#endregion
@@ -154,15 +145,26 @@ namespace Mathmatix.Common
 	/// </summary>
 	public class PrimeFactor
 	{
+		public PrimeFactor()
+		{
+
+		}
+
+		public PrimeFactor(int prime, int multiplier)
+		{
+			this.Prime = prime;
+			this.Multiplier = multiplier;
+		}
+
 		/// <summary>
 		/// 素数
 		/// </summary>
-		public long Prime { get; set; }
+		public int Prime { get; set; }
 
 		/// <summary>
 		/// 乗数
 		/// </summary>
-		public long Multiplier { get; set; }
+		public int Multiplier { get; set; }
 
 		#region method
 
@@ -192,7 +194,7 @@ namespace Mathmatix.Common
 		/// <summary>
 		/// 元の整数値
 		/// </summary>
-		public long Value { get; set; }
+		public int Value { get; set; }
 
 		/// <summary>
 		/// 0かどうか
