@@ -19,7 +19,7 @@ namespace Mathmatix.Common
 		/// </summary>
 		/// <param name="maxValue"></param>
 		/// <returns></returns>
-		public static IEnumerable<int> GetPrimes(int maxValue)
+		public static IEnumerable<long> GetPrimes(long maxValue)
 		{
 			bool[] isPrime = new bool[maxValue];
 
@@ -28,12 +28,12 @@ namespace Mathmatix.Common
 				yield break;
 			}
 
-			int sqrtN = (int)Math.Floor(Math.Sqrt(maxValue));
-			int n;
+			long sqrtN = (long)Math.Floor(Math.Sqrt(maxValue));
+			long n;
 
-			for (int x = 1; x <= sqrtN; ++x)
+			for (long x = 1; x <= sqrtN; ++x)
 			{
-				for (int y = 1; y <= sqrtN; ++y)
+				for (long y = 1; y <= sqrtN; ++y)
 				{
 					n = 4 * x * x + y * y;
 					if (n <= maxValue && (n % 12 == 1 || n % 12 == 5))
@@ -55,11 +55,11 @@ namespace Mathmatix.Common
 				}
 			}
 
-			for (int i = 5; i <= sqrtN; ++i)
+			for (long i = 5; i <= sqrtN; ++i)
 			{
 				if (isPrime[i - 1])
 				{
-					for (int k = i * i; k <= maxValue; k += i * i)
+					for (long k = i * i; k <= maxValue; k += i * i)
 					{
 						isPrime[k - 1] = false;
 					}
@@ -75,7 +75,7 @@ namespace Mathmatix.Common
 				isPrime[2] = true;
 			}
 
-			for (int i = 0; i < isPrime.Length; i++)
+			for (long i = 0; i < isPrime.Length; i++)
 			{
 				if (isPrime[i])
 				{
@@ -89,7 +89,7 @@ namespace Mathmatix.Common
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static PrimeFactors Factorize(int value)
+		public static PrimeFactors Factorize(long value)
 		{
 			switch (value)
 			{
@@ -103,7 +103,7 @@ namespace Mathmatix.Common
 
 			var val = Math.Abs(value);
 			var primes = GetPrimes(val);
-			var enumerable = primes as int[] ?? primes.ToArray();
+			var enumerable = primes as long[] ?? primes.ToArray();
 			if (enumerable.Max() == val)
 			{
 				return new PrimeFactors
@@ -150,7 +150,7 @@ namespace Mathmatix.Common
 
 		}
 
-		public PrimeFactor(int prime, int multiplier)
+		public PrimeFactor(long prime, long multiplier)
 		{
 			this.Prime = prime;
 			this.Multiplier = multiplier;
@@ -159,12 +159,12 @@ namespace Mathmatix.Common
 		/// <summary>
 		/// 素数
 		/// </summary>
-		public int Prime { get; set; }
+		public long Prime { get; set; }
 
 		/// <summary>
 		/// 乗数
 		/// </summary>
-		public int Multiplier { get; set; }
+		public long Multiplier { get; set; }
 
 		#region method
 
@@ -194,7 +194,7 @@ namespace Mathmatix.Common
 		/// <summary>
 		/// 元の整数値
 		/// </summary>
-		public int Value { get; set; }
+		public long Value { get; set; }
 
 		/// <summary>
 		/// 0かどうか

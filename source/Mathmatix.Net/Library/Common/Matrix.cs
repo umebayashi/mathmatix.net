@@ -7,6 +7,45 @@ using Mathmatix.Common.Algebra;
 namespace Mathmatix.Common
 {
 	/// <summary>
+	/// 行列に関する演算を扱うクラス
+	/// </summary>
+	public class Matrix
+	{
+		#region コンストラクタ
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="rows"></param>
+		/// <param name="columns"></param>
+		public Matrix(IEnumerable<double> data, int rows, int columns)
+		{
+
+		}
+
+		#endregion
+
+		#region フィールド
+		#endregion
+
+		#region プロパティ
+
+		public double this[int row, int column]
+		{
+			get
+			{
+				return -1;
+			}
+		}
+
+		#endregion
+
+		#region メソッド
+		#endregion
+	}
+
+	/// <summary>
 	/// 行列クラスの基本クラス
 	/// </summary>
 	/// <typeparam name="T"></typeparam>

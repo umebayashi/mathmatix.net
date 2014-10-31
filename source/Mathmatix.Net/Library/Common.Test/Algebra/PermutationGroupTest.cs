@@ -73,7 +73,7 @@ namespace Mathmatix.Common.Algebra
 		[TestMethod]
 		public void TestCalculate()
 		{
-			var permutations = PermutationGroup.Calculate(3);
+			var permutations = PermutationGroup.Calculate(4);
 
 			foreach (var permutation in permutations)
 			{

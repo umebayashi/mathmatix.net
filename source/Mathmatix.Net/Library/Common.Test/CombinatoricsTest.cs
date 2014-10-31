@@ -69,20 +69,20 @@ namespace Mathmatix.Common
 		[TestMethod]
 		public void TestCombinationCount()
 		{
-			var result = Combinatorics.CombinationCount(10, 5);
-			Assert.AreEqual<long>(252, result);
+			var result = Combinatorics.CombinationCount(5, 3);
+			Assert.AreEqual<long>(10, result);
 		}
 
 		[TestMethod]
-		public void TestGenerateCombinationNotAllowDuplicate()
+		public void TestCombinations()
 		{
-			var generator = new CombinationGenerator<int>();
-			var combinations = generator.Generate(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 5);
+			var source = new char[] { 'A', 'A', 'B', 'C', 'D', 'D', 'E' };
+			var combinations = source.Combinations(4);
 
 			int count = 0;
 			foreach (var combination in combinations)
 			{
-				WriteArray<int>(combination, ++count);
+				WriteArray<char>(combination, ++count);
 			}
 
 			Console.WriteLine();

@@ -5,6 +5,11 @@ using System.Text;
 
 namespace Mathmatix.Common
 {
+	public class Vector
+	{
+
+	}
+
 	public abstract class Vector<T> where T : IComparable
 	{
 		#region constructor
