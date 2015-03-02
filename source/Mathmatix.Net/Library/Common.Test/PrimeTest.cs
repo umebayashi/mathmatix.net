@@ -12,7 +12,7 @@ namespace Mathmatix.Common
 		[TestMethod]
 		public void TestGetPrime()
 		{
-			var primes = Prime.GetPrimes(100000);
+			var primes = Prime.GetPrimes(200000);
 
 			int index = 0;
 			foreach (var prime in primes)
