@@ -6,8 +6,18 @@ using Mathmatix.Common.Algebra;
 namespace Mathmatix.Common
 {
 	public static class Combinatorics
-	{
-		/// <summary>
+    {
+        #region nested class
+
+        private class SplitResult<T>
+        {
+            public T Left { get; set; }
+            public T[] Right { get; set; }
+        }
+
+        #endregion
+
+        /// <summary>
 		/// 順列の場合の数
 		/// </summary>
 		/// <param name="n"></param>
@@ -43,8 +53,52 @@ namespace Mathmatix.Common
 		/// <returns></returns>
 		public static IEnumerable<T[]> Permutations<T>(this IEnumerable<T> source, int length) where T: IEquatable<T>, IComparable<T>
 		{
-			return null;
+            var combinations = Combinations(source, length);
+
+            foreach (var combination in combinations)
+            {
+                for (int i = 0; i < combination.Length; i++)
+                {
+                    var split = Split(combination, i);
+                    foreach (var permutation in GetPermutations(split))
+                    {
+                        yield return permutation;
+                    }
+                }
+            }
 		}
+
+        private static SplitResult<T> Split<T>(IEnumerable<T> source, int splitIndex)
+        {
+            var result = new SplitResult<T>
+            {
+                Left = source.ElementAt(splitIndex),
+                Right = source.Where((x, i) => i != splitIndex).ToArray()
+            };
+
+            return result;
+        }
+
+        private static IEnumerable<T[]> GetPermutations<T>(SplitResult<T> splitResult)
+        {
+            if (splitResult.Right.Length == 2)
+            {
+                yield return new T[] { splitResult.Left, splitResult.Right[0], splitResult.Right[1] };
+                yield return new T[] { splitResult.Left, splitResult.Right[1], splitResult.Right[0] };
+            }
+            else
+            {
+                for (int i = 0; i < splitResult.Right.Length; i++)
+                {
+                    var splitR = Split(splitResult.Right, i);
+                    var children = GetPermutations(splitR);
+                    foreach (var child in children)
+                    {
+                        yield return (new T[] { splitResult.Left }).Concat(child).ToArray();
+                    }
+                }
+            }
+        }
 
 		/// <summary>
 		/// シーケンスの要素から組み合わせを列挙する

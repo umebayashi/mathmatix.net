@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reactive.Linq;
 
 namespace Mathmatix.Common.Algebra
 {
@@ -132,6 +133,58 @@ namespace Mathmatix.Common.Algebra
 
 			return listPermutation;
 		}
+
+        public static IObservable<PermutationGroup> CalculateEx(int size)
+        {
+            var result = Observable.Create<PermutationGroup>(observer =>
+            {
+                PermutationGroup pg = null;
+                var source = GetElements(size);
+                var listPermutation = new List<PermutationGroup>();
+
+                pg = new PermutationGroup(new VectorI(Enumerable.Range(0, size).ToArray()), new VectorI[0]);
+                listPermutation.Add(pg);
+                observer.OnNext(pg);
+
+                int length = 0;
+                int maxSize = size.Factorial();
+                var listElements = new List<VectorI[]>();
+                while (listPermutation.Count() < maxSize)
+                {
+                    length++;
+                    listElements.Clear();
+
+                    for (int i = 0; i < source.Length; i++)
+                    {
+                        var vector = new VectorI[length];
+                        vector[0] = source[i];
+                        CalculateElements(listElements, source, length, 0, vector);
+                    }
+
+                    foreach (var elements in listElements)
+                    {
+                        var vector = CalculateVector(size, elements);
+                        if (listPermutation.Where(x => x.Vector.Equals(vector)).Count() == 0)
+                        {
+                            pg = new PermutationGroup(vector, elements);
+                            listPermutation.Add(pg);
+                            observer.OnNext(pg);
+
+                            if (listPermutation.Count() == maxSize)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                observer.OnCompleted();
+
+                return () => { };
+            });
+
+            return result;
+        }
 
 		private static void CalculateElements(List<VectorI[]> list, VectorI[] source, int length, int index, VectorI[] vector)
 		{

@@ -76,18 +76,32 @@ namespace Mathmatix.Common
 		[TestMethod]
 		public void TestCombinations()
 		{
-			var source = new char[] { 'A', 'A', 'B', 'C', 'D', 'D', 'E' };
+			//var source = new char[] { 'A', 'A', 'B', 'C', 'D', 'D', 'E' };
+            var source = Enumerable.Range(1, 10);
 			var combinations = source.Combinations(4);
 
 			int count = 0;
 			foreach (var combination in combinations)
 			{
-				WriteArray<char>(combination, ++count);
+				WriteArray<int>(combination, ++count);
 			}
 
 			Console.WriteLine();
 			Console.Write("組合せ数:{0}", count);
 		}
+
+        [TestMethod]
+        public void TestPermutations()
+        {
+            var source = Enumerable.Range(1, 9);
+            var permutations = source.Permutations(source.Count());
+
+            int count = 0;
+            foreach (var permutation in permutations)
+            {
+                WriteArray(permutation, ++count);
+            }
+        }
 
 		[TestMethod]
 		public void TestGeneratePermutationNotAllowDuplicate()
