@@ -370,12 +370,10 @@ namespace Mathmatix.Common.Statistics
 		{
 			var d1 = data1.ToArray();
 			var d2 = data2.ToArray();
-			var cgen = new CombinationGenerator<int>();
-			var cmbs = cgen.Generate(Enumerable.Range(0, d1.Length), 2);
+            var cmbs = Enumerable.Range(0, d1.Length).Combinations(2);
 			int p = 0;
 			foreach (var c in cmbs)
 			{
-				//if ((d1[c[0]] <= d1[c[1]]) && (d2[c[0]] <= d2[c[1]]))
 				if (d1[c[0]].CompareTo(d1[c[1]]) == d2[c[0]].CompareTo(d2[c[1]]))
 				{
 					p++;

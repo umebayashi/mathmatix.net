@@ -16,32 +16,14 @@ namespace Mathmatix.Common.Statistics
 
 		public void Analyze(IEnumerable<T> data)
 		{
-			//var clusters = data.Select(x => new Cluster<T>(x)).ToList();
-			//var list = new List<ClusterPair<T>>();
-			//var generator = new CombinationGenerator<Cluster<T>>();
-
-			//var combinations = generator.Generate(clusters, 2);
-
-			//foreach (var combination in combinations)
-			//{
-			//	var distance = this.DistanceComparer(combination[0].Items, combination[1].Items);
-			//	var pair = new ClusterPair<T>(combination[0], combination[1], distance);
-			//	list.Add(pair);
-			//}
-
-			//var minDistance = list.Where(x => x.Distance == list.Min(y => y.Distance)).First();
-			//clusters.Remove(minDistance.Item1);
-			//clusters.Remove(minDistance.Item2);
-			//var parent = new Cluster<T>(null);
 			var clusters = data.Select(x => new ClusterNode<T>{ Value = x }).ToList();
 			var distances = new List<ClusterNodePair<T>>();
 			var list = new List<ClusterNodePair<T>>();
-			var generator = new CombinationGenerator<ClusterNode<T>>();
 
 			while (clusters.Count > 1)
 			{
 				list.Clear();
-				var combinations = generator.Generate(clusters, 2);
+                var combinations = clusters.Combinations(2);
 				foreach (var combination in combinations)
 				{
 					var distance = this.DistanceComparer(combination[0], combination[1]);

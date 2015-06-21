@@ -103,22 +103,6 @@ namespace Mathmatix.Common
             }
         }
 
-		[TestMethod]
-		public void TestGeneratePermutationNotAllowDuplicate()
-		{
-			var generator = new PermutationGenerator<int>();
-			var permutations = generator.Generate(new int[] { 0, 1, 2, 3, 4 }, 3);
-
-			int count = 0;
-			foreach (var permutation in permutations)
-			{
-				WriteArray<int>(permutation, ++count);
-			}
-
-			Console.WriteLine();
-			Console.Write("順列数:{0}", count);
-		}
-
 		private void WriteArray<T>(T[] array, int count)
 		{
 			var result = new StringBuilder();
@@ -135,29 +119,5 @@ namespace Mathmatix.Common
 
 			Console.WriteLine(result.ToString());
 		}
-		/*
-		[TestMethod]
-		public void TestGetPermutationGenerator()
-		{
-			var generator = Combinatorics<int>.GetPermutationGenerator(new int[] { 0, 1, 2, 3, 4 }, 5, false);
-
-			int index = 0;
-			generator.BeginGenerate(x =>
-			{
-				index++;
-				Console.Write("({0}): [", index.ToString("0000"));
-				for (int i = 0; i < x.Length; i++)
-				{
-
-					Console.Write(x[i]);
-					if (i < x.Length - 1)
-					{
-						Console.Write(", ");
-					}
-				}
-				Console.WriteLine("]");
-			});
-		}
-		*/
 	}
 }
