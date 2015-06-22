@@ -37,7 +37,7 @@
     <Compile Include="Algebra\SLESolver.cs" />
     <Compile Include="Analysis\BetaFunction.cs" />
     <Compile Include="Analysis\GammaFunction.cs" />
-    <Compile Include="Collection.cs" />
+    <Compile Include="CollectionExtension.cs" />
     <Compile Include="Combinatorics.cs" />
     <Compile Include="Complex.cs" />
     <Compile Include="MathExtensions.cs" />

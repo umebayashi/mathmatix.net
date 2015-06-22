@@ -71,6 +71,7 @@
     <Compile Include="Statistics\ClusterAnalysisTest.cs" />
     <Compile Include="Statistics\ProbabilityDistributionTest.cs" />
     <Compile Include="Statistics\RegressionAnalysisTest.cs" />
+    <Compile Include="CollectionExtensionTest.cs" />
     <Compile Include="VectorTest.cs" />
   </ItemGroup>
   <ItemGroup>
