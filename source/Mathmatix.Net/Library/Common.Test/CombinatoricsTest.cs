@@ -77,8 +77,8 @@ namespace Mathmatix.Common
 		public void TestCombinations()
 		{
 			//var source = new char[] { 'A', 'A', 'B', 'C', 'D', 'D', 'E' };
-            var source = Enumerable.Range(1, 10);
-			var combinations = source.Combinations(4);
+            var source = Enumerable.Range(1, 8);
+            var combinations = source.Combinations(4);
 
 			int count = 0;
 			foreach (var combination in combinations)

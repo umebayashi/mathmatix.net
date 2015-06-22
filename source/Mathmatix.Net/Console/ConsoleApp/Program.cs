@@ -21,8 +21,9 @@ namespace Mathmatix.ConsoleApp
             //    p => Console.WriteLine("{0} : {1}", (++i).ToString("000000"), p),
             //    ex => Console.WriteLine(ex),
             //    () => Console.WriteLine("Complete."));
+
             int length = 9;
-            var permutations = Enumerable.Range(1, length).ToArray().Permutations(length);
+            var permutations = Enumerable.Range(0, length).ToArray().Permutations(length);
             int count = 0;
             foreach (var permutation in permutations)
             {
