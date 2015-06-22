@@ -8,34 +8,34 @@ namespace Mathmatix.Common
     /// <summary>
     /// シーケンスの要素から順列・組合せを生成する
     /// </summary>
-	public static class Combinatorics
+    public static class Combinatorics
     {
         /// <summary>
-		/// 順列の場合の数
-		/// </summary>
-		/// <param name="n"></param>
-		/// <param name="x"></param>
-		/// <returns></returns>
-		public static long PermutationCount(long n, long x)
-		{
-			long result = 1;
-			for (var i = 0; i < x; i++)
-			{
-				result = result * (n - i);
-			}
-			return result;
-		}
+        /// 順列の場合の数
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        public static long PermutationCount(long n, long x)
+        {
+            long result = 1;
+            for (var i = 0; i < x; i++)
+            {
+                result = result * (n - i);
+            }
+            return result;
+        }
 
-		/// <summary>
-		/// 組合せの場合の数
-		/// </summary>
-		/// <param name="n"></param>
-		/// <param name="x"></param>
-		/// <returns></returns>
-		public static long CombinationCount(long n, long x)
-		{
-			return PermutationCount(n, x) / x.Factorial();
-		}
+        /// <summary>
+        /// 組合せの場合の数
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        public static long CombinationCount(long n, long x)
+        {
+            return PermutationCount(n, x) / x.Factorial();
+        }
 
         /// <summary>
         /// シーケンスの要素から組み合わせを列挙する
@@ -86,15 +86,15 @@ namespace Mathmatix.Common
             }
         }
 
-		/// <summary>
-		/// シーケンスの要素から順列を列挙する
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="source"></param>
-		/// <param name="length"></param>
-		/// <returns></returns>
-		public static IEnumerable<T[]> Permutations<T>(this IEnumerable<T> source, int length) where T: IEquatable<T>, IComparable<T>
-		{
+        /// <summary>
+        /// シーケンスの要素から順列を列挙する
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static IEnumerable<T[]> Permutations<T>(this IEnumerable<T> source, int length) where T: IEquatable<T>, IComparable<T>
+        {
             var combinations = source.Combinations(length);
 
             foreach (var combination in combinations)
@@ -107,7 +107,7 @@ namespace Mathmatix.Common
                     }
                 }
             }
-		}
+        }
 
         private static IEnumerable<T[]> GetPermutations<T>(IEnumerable<T> source, int splitIndex)
         {
