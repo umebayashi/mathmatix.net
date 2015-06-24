@@ -8,41 +8,31 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
 {
     public class NumberPlaceSolver
     {
-        public IEnumerable<NumberPlaceMatrix> SolveAsync(NumberPlaceMatrix seed)
+        public IEnumerable<NumberPlaceMatrix> Solve(NumberPlaceMatrix seed)
         {
-            var candidateTable = new Dictionary<NumberPlaceMatrixCell, List<int>>();
+            var sizeRange = Enumerable.Range(0, seed.Size);
+            var blockRowRange = Enumerable.Range(0, seed.BlockRowSize);
+            var blockColumnRange = Enumerable.Range(0, seed.BlockColumnCount);
+            var blockRange = blockRowRange.SelectMany(r => blockColumnRange.Select(c => new { BlockRowIndex = r, BlockColumnIndex = c }));
 
-            for (int r = 0; r < seed.Size; r++)
+            var rows = sizeRange.Select(x => new 
+            { 
+                RowIndex = x, 
+                HasValueCount = seed.GetRow(x).Count(y => y.Value > 0) 
+            }).ToArray();
+            var columns = sizeRange.Select(x => new 
+            { 
+                ColumnIndex = x, 
+                HasValueCount = seed.GetColumn(x).Count(y => y.Value > 0) 
+            }).ToArray();
+            var blocks = blockRange.Select(x => new
             {
-                var row = seed.GetRow(r);
-                foreach (var cell in row)
-                {
-                    candidateTable.Add(cell, new List<int>());
-                }
-                var rowValues = row.Where(x => x.Value > 0).Select(x => x.Value).ToArray();
-                var candidateValues = Enumerable.Range(1, seed.Size).Except(rowValues).ToArray();
-
-                foreach (var emptyCell in row.Where(x => x.Value == 0))
-                {
-                    candidateTable[emptyCell].AddRange(candidateValues);
-                }
-            }
-
-            for (int c = 0; c < seed.Size; c++)
-            {
-                var column = seed.GetColumn(c);
-                var columnValues = column.Where(x => x.Value > 0).Select(x => x.Value).ToArray();
-
-                foreach (var emptyCell in column.Where(x => x.Value == 0))
-                {
-                    var list = candidateTable[emptyCell];
-                    var candidateValues = list.Except(columnValues).ToArray();
-                    list.Clear();
-                    list.AddRange(candidateValues);
-                }
-            }
-
-            return null;
+                BlockRowIndex = x.BlockRowIndex,
+                BlockColumnIndex = x.BlockColumnIndex,
+                HasValueCount = seed.GetBlock(x.BlockRowIndex, x.BlockColumnIndex).Count(y => y.Value > 0)
+            }).ToArray();
+            
+            yield return seed;
         }
     }
 }

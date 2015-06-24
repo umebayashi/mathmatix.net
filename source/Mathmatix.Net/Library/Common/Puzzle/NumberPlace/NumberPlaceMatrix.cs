@@ -12,10 +12,6 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
     /// </summary>
     public class NumberPlaceMatrix
     {
-        #region ネストクラス
-
-        #endregion
-
         #region フィールド
 
         private List<NumberPlaceMatrixCell> _Cells = new List<NumberPlaceMatrixCell>();
@@ -38,17 +34,9 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
         /// <param name="size">縦・横の各マスの数</param>
         /// <param name="blockRowSize">1つのブロックに含まれる行数</param>
         /// <param name="blockColumnSize">1つのブロックに含まれる列数</param>
-        public NumberPlaceMatrix(int size, int blockRowSize, int blockColumnSize)
+        public NumberPlaceMatrix(int size, int blockRowSize, int blockColumnSize, int[] values)
         {
-            this.Size = size;
-            this.BlockRowSize = blockRowSize;
-            this.BlockColumnSize = blockColumnSize;
-
-            CheckCondition(this.Size % this.BlockRowSize == 0);
-            CheckCondition(this.Size % this.BlockColumnSize == 0);
-
-            this.BlockRowCount = this.Size / this.BlockRowSize;
-            this.BlockColumnCount = this.Size / this.BlockColumnSize;
+            this.Initialize(size, blockRowSize, blockColumnSize, values);
         }
 
         /// <summary>
@@ -57,18 +45,18 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
         /// <param name="size">縦・横の各マスの数</param>
         /// <param name="blockRowSize">1つのブロックに含まれる行数</param>
         /// <param name="blockColumnSize">1つのブロックに含まれる列数</param>
-        public NumberPlaceMatrix(int size, int blockRowSize, int blockColumnSize, int[] values) : this(size, blockRowSize, blockColumnSize)
+        public NumberPlaceMatrix(int size, int blockRowSize, int blockColumnSize)
         {
-            this.Initialize(values);
+            var values = new int[size * size];
+            this.Initialize(size, blockRowSize, blockColumnSize, values);
         }
 
         /// <summary>
         /// 既定のサイズ（9x9）の数独マトリクスを作成する
         /// </summary>
         public NumberPlaceMatrix(int[] values)
-            : this(DEFAULT_SIZE, DEFAULT_BLOCK_ROW_SIZE, DEFAULT_BLOCK_COLUMN_SIZE) 
+            : this(DEFAULT_SIZE, DEFAULT_BLOCK_ROW_SIZE, DEFAULT_BLOCK_COLUMN_SIZE, values) 
         {
-            this.Initialize(values);
         }
 
         /// <summary>
@@ -77,8 +65,6 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
         public NumberPlaceMatrix()
             : this(DEFAULT_SIZE, DEFAULT_BLOCK_ROW_SIZE, DEFAULT_BLOCK_COLUMN_SIZE) 
         {
-            var values = Enumerable.Repeat(0, DEFAULT_SIZE * DEFAULT_SIZE).ToArray();
-            this.Initialize(values);
         }
 
         /// <summary>
@@ -128,24 +114,29 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
                 CheckCondition(0 <= value && value <= this.Size);
 
                 var cell = _Cells.Find(c => c.RowIndex == rowIndex && c.ColumnIndex == columnIndex);
-                if (cell == null)
-                {
-                    cell = new NumberPlaceMatrixCell { RowIndex = rowIndex, ColumnIndex = columnIndex, Value = value };
-                    _Cells.Add(cell);
-                }
-                else
-                {
-                    cell.Value = value;
-                }
+                cell.Value = value;
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="size"></param>
+        /// <param name="blockRowSize"></param>
+        /// <param name="blockColumnSize"></param>
         /// <param name="values"></param>
-        private void Initialize(int[] values)
+        private void Initialize(int size, int blockRowSize, int blockColumnSize, int[] values)
         {
+            this.Size = size;
+            this.BlockRowSize = blockRowSize;
+            this.BlockColumnSize = blockColumnSize;
+
+            CheckCondition(this.Size % this.BlockRowSize == 0);
+            CheckCondition(this.Size % this.BlockColumnSize == 0);
+
+            this.BlockRowCount = this.Size / this.BlockRowSize;
+            this.BlockColumnCount = this.Size / this.BlockColumnSize;
+
             CheckCondition(values.Length == this.Size * this.Size,
                 string.Format("配列の要素数が{0}x{0}と一致しません", this.Size));
             CheckCondition(0 <= values.Min(),
@@ -155,11 +146,22 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
 
             _Cells.Clear();
 
+            int br = 0;
+            int bc = 0;
             for (int r = 0; r < this.Size; r++)
             {
+                br = r / this.BlockRowSize;
                 for (int c = 0; c < this.Size; c++)
                 {
-                    var cell = new NumberPlaceMatrixCell { RowIndex = r, ColumnIndex = c, Value = values[r * this.Size + c] };
+                    bc = c / this.BlockColumnSize;
+                    var cell = new NumberPlaceMatrixCell
+                    {
+                        RowIndex = r,
+                        ColumnIndex = c,
+                        BlockRowIndex = br,
+                        BlockColumnIndex = bc,
+                        Value = values[r * this.Size + c]
+                    };
                     _Cells.Add(cell);
                 }
             }
@@ -211,7 +213,7 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
             CheckCondition(0 <= rowIndex && rowIndex < this.Size, "インデックスが範囲外です");
 
             // 行を抽出
-            var row = _Cells.Where(x => x.RowIndex == rowIndex).OrderBy(x => x.ColumnIndex).Select(x => x.Value);
+            var row = this.GetRow(rowIndex).Select(x => x.Value);
 
             // 1～Sizeの数値が重複なく含まれているかどうか
             var isValid = row.OrderBy(x => x).SequenceEqual(Enumerable.Range(1, this.Size));
@@ -229,7 +231,7 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
             CheckCondition(0 <= columnIndex && columnIndex < this.Size, "インデックスが範囲外です");
 
             // 列を抽出
-            var column = _Cells.Where(x => x.ColumnIndex == columnIndex).OrderBy(x => x.RowIndex).Select(x => x.Value);
+            var column = this.GetColumn(columnIndex).Select(x => x.Value);
 
             // 1～Sizeの数値が重複なく含まれているかどうか
             var isValid = column.OrderBy(x => x).SequenceEqual(Enumerable.Range(1, this.Size));
@@ -249,18 +251,7 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
             CheckCondition(0 <= blockColumnIndex && blockColumnIndex < this.BlockColumnCount, "インデックスが範囲外です");
 
             // ブロックを抽出
-            var rowIndexStart = blockRowIndex * this.BlockRowSize;
-            var rowIndexEnd = rowIndexStart + this.BlockRowSize - 1;
-            var columnIndexStart = blockColumnIndex * this.BlockColumnSize;
-            var columnIndexEnd = columnIndexStart + this.BlockColumnSize - 1;
-
-            var block = _Cells
-                .Where(x =>
-                    rowIndexStart <= x.RowIndex && x.RowIndex <= rowIndexEnd &&
-                    columnIndexStart <= x.ColumnIndex && x.ColumnIndex <= columnIndexEnd)
-                .OrderBy(x => x.RowIndex)
-                .ThenBy(x => x.ColumnIndex)
-                .Select(x => x.Value);
+            var block = this.GetBlock(blockRowIndex, blockColumnIndex).Select(x => x.Value);
 
             // 1～Sizeの数値が重複なく含まれているかどうか
             var isValid = block.OrderBy(x => x).SequenceEqual(Enumerable.Range(1, this.Size));
@@ -303,6 +294,26 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
 
             return column;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="blockRowIndex"></param>
+        /// <param name="blockColumnIndex"></param>
+        /// <returns></returns>
+        public NumberPlaceMatrixCell[] GetBlock(int blockRowIndex, int blockColumnIndex)
+        {
+            return _Cells.Where(x => x.BlockRowIndex == blockRowIndex && x.BlockColumnIndex == blockColumnIndex).ToArray();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public NumberPlaceMatrixCell[] GetValues()
+        {
+            return _Cells.ToArray();
+        }
     }
 
     /// <summary>
@@ -310,19 +321,28 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
     /// </summary>
     public class NumberPlaceMatrixCell
     {
-        public NumberPlaceMatrixCell()
+        internal NumberPlaceMatrixCell()
         {
         }
 
-        public int RowIndex { get; set; }
+        public int RowIndex { get; internal set; }
 
-        public int ColumnIndex { get; set; }
+        public int ColumnIndex { get; internal set; }
 
-        public int Value { get; set; }
+        public int BlockRowIndex { get; internal set; }
+
+        public int BlockColumnIndex { get; internal set; }
+
+        public int Value { get; internal set; }
 
         public override string ToString()
         {
-            return string.Format("[R:{0} C:{1} V:{2}]", this.RowIndex, this.ColumnIndex, this.Value);
+            return string.Format("[R:{0} C:{1} BR:{2} BC:{3} V:{4}]", 
+                this.RowIndex, 
+                this.ColumnIndex, 
+                this.BlockRowIndex,
+                this.BlockColumnIndex,
+                this.Value);
         }
 
         public override int GetHashCode()
