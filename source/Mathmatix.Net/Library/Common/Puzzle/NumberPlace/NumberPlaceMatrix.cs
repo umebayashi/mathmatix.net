@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -310,7 +311,7 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
         /// 
         /// </summary>
         /// <returns></returns>
-        public NumberPlaceMatrixCell[] GetValues()
+        public NumberPlaceMatrixCell[] GetCells()
         {
             return _Cells.ToArray();
         }
@@ -319,7 +320,7 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
     /// <summary>
     /// 
     /// </summary>
-    public class NumberPlaceMatrixCell
+    public class NumberPlaceMatrixCell : IEquatable<NumberPlaceMatrixCell>
     {
         internal NumberPlaceMatrixCell()
         {
@@ -354,10 +355,15 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
         {
             if (obj is NumberPlaceMatrixCell)
             {
-                var target = (NumberPlaceMatrixCell)obj;
-                return (this.RowIndex == target.RowIndex && this.ColumnIndex == target.ColumnIndex); ;
+                var other = (NumberPlaceMatrixCell)obj;
+                return this.Equals(other);
             }
             return base.Equals(obj);
+        }
+
+        public bool Equals(NumberPlaceMatrixCell other)
+        {
+            return (this.RowIndex == other.RowIndex && this.ColumnIndex == other.ColumnIndex);
         }
     }
 }

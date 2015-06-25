@@ -40,7 +40,7 @@ namespace Mathmatix.Common.Puzzle.NumberPlace
                 4, 1, 3, 6, 8, 7, 5, 2, 9
             };
 
-            Assert.IsTrue(results.First().GetValues().Select(x => x.Value).ToArray().SequenceEqual(expected));
+            Assert.IsTrue(results.First().GetCells().Select(x => x.Value).ToArray().SequenceEqual(expected));
         }
     }
 }
